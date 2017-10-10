@@ -1,3 +1,15 @@
+/*
+  Map_PDF_Exporte
+  Written by Scott Kildall
+  September 2017
+  
+  Renders out a simple CSV file
+  
+  Looks for 2 header columns: "Latitude" and "Longitude"
+  
+  Need to fix the scaling for longitude and latitude to the screen, there will currently be distortion
+*/
+
 import processing.pdf.*;
 
 boolean recordToPDF = false;
@@ -22,13 +34,13 @@ void draw() {
   
   
   if( recordToPDF ) {
-    beginRecord(PDF, "data_file.pdf");
+    beginRecord(PDF, "data_output.pdf");
   }
   
-  fill(0,0,255);
+  fill(255,0,0);
   stroke(127,127,127);
   //-- draw data
-  drawData();
+  drawAllData();
   
   if( recordToPDF ) {
     endRecord();
@@ -40,7 +52,7 @@ void draw() {
 }
 
 void loadData() {
-  table = loadTable("tree_caretakers.csv", "header");
+  table = loadTable("data_input.csv", "header");
 
   println(table.getRowCount() + " total rows in table"); 
 
@@ -50,7 +62,6 @@ void loadData() {
     
     float x = row.getFloat("Longitude");
     float y = row.getFloat("Latitude");
-    int treeHeight = row.getInt("Width");
     
     if( x < minX )
       minX = x;
@@ -72,24 +83,21 @@ void loadData() {
   println("max Y =" + maxY );
 }
 
-void drawData() {
+void drawAllData() {
   for (TableRow row : table.rows()) {
     
     float x = row.getFloat("Longitude");
     float y = row.getFloat("Latitude");
-    int treeHeight = row.getInt("Width");
     
-    drawTree(x,y, treeHeight);
+    drawDatum(x,y, 10);
   }
 }
 
-void drawTree(float x, float y, int treeHeight) {
+void drawDatum(float x, float y, float dataSize) {
   float drawX = map(x, minX, maxX, 100, width - 100);
   float drawY = map(y, minY, maxY, 100, height - 100);
   
-  
-  ellipse(drawX, drawY, treeHeight/4, treeHeight/4); // Constraint of where circles appear and size of circles
-  
+  ellipse(drawX, drawY, dataSize/4, dataSize/4); // Constraint of where circles appear and size of circles
 }
 
 void keyPressed() {
