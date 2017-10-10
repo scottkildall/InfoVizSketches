@@ -19,20 +19,23 @@ void setup() {
 void draw() {
   //-- draw background elements
   background(0);
-  fill(0,0,255);
-  stroke(127,127,127);
+  
   
   if( recordToPDF ) {
     beginRecord(PDF, "data_file.pdf");
-    background(255);    // flash to white
   }
   
+  fill(0,0,255);
+  stroke(127,127,127);
   //-- draw data
   drawData();
   
   if( recordToPDF ) {
     endRecord();
     recordToPDF = false;
+    
+    background(255);    // flash to white
+  
   } 
 }
 
