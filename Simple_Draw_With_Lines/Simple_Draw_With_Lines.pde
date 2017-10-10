@@ -3,7 +3,7 @@
   Written by Scott Kildall
   September 2017
   
-  Draws some simple shapes
+  Draws some simple shapes w/intersecting lines
 */
 
 
@@ -22,6 +22,7 @@ void draw() {
   fill(255,0,0);        // fill color
   strokeWeight(0);
   drawRowSquares(5, 100, 10);
+
   
   //-- Fill
   fill(255,0,255);        // fill color
@@ -43,6 +44,9 @@ void draw() {
    int spaceBetween = width/(num +1);
    
    for( int i = 0; i < num; i++ )   {
+     strokeWeight(1);
+     line(width/2, height/2, spaceBetween * (i+1), h);
+     
      rect( spaceBetween * (i+1), h, edgeSize, edgeSize );
    }
  }
