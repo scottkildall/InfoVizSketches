@@ -20,7 +20,10 @@ float minX = 9999;
 float maxX = -9999;
 float minY = 9999;
 float maxY = -9999;
-    
+float xRange;
+float xScale;
+float yRange;
+float yScale;
   
 void setup() {
   size(1000,800);
@@ -39,6 +42,7 @@ void draw() {
   
   fill(255,0,0);
   stroke(127,127,127);
+  strokeWeight(0);
   //-- draw data
   drawAllData();
   
@@ -47,7 +51,6 @@ void draw() {
     recordToPDF = false;
     
     background(255);    // flash to white
-  
   } 
 }
 
@@ -74,13 +77,23 @@ void loadData() {
       maxY = y;
     
     rowNum = rowNum + 1;
-    println("row :" + rowNum + "  X: " + x );
+    //println("row :" + rowNum + "  X: " + x );
   }  
   
   println("min X =" + minX );
   println("min Y =" + minY );
   println("max X =" + maxX );
   println("max Y =" + maxY );
+  
+  xRange = maxX-minX;
+  yRange = maxY-minY;
+  
+  println("X range =" + xRange);
+  println("Y range =" + yRange );
+  
+  //-- this only works in cases like SF where yScale < xScale
+  yScale = yRange/xRange;
+  println("Y scale =" + yScale );
 }
 
 void drawAllData() {
@@ -95,7 +108,7 @@ void drawAllData() {
 
 void drawDatum(float x, float y, float dataSize) {
   float drawX = map(x, minX, maxX, 100, width - 100);
-  float drawY = map(y, minY, maxY, 100, height - 100);
+  float drawY = map(y, minY, maxY, 100, height - 100);// * yScale;
   
   ellipse(drawX, drawY, dataSize/4, dataSize/4); // Constraint of where circles appear and size of circles
 }
