@@ -22,6 +22,9 @@ import processing.pdf.*;
 //-- then, in the draw() functon we will record 
 boolean recordToPDF = false;
 
+//-- set to TRUE if you are using the size field (such as with prisons)
+boolean bUseSize = true;
+
 //-- this is our table of data
 Table table;
 
@@ -136,13 +139,22 @@ void drawAllData() {
     
     float x = row.getFloat("Longitude");
     float y = row.getFloat("Latitude");
-    float s = row.getFloat("Size");
+    float s;    // size
     
-    //-- filter so we don't show small prisons
-    if( s > 10 ) {
-      //-- decrease size here
-      s = s / 100;
-      drawDatum(x,y, s);
+    if( bUseSize ) {
+       s = row.getFloat("Size");
+    
+      //-- filter so we don't show small prisons
+      if( s > 10 ) {
+        //-- decrease size here
+        s = s / 100;
+        drawDatum(x,y, s);
+      }
+    }
+    else {
+      //-- not using size methods
+       s = 5; 
+       drawDatum(x,y, s);
     }
   }
 }
@@ -157,13 +169,13 @@ void drawDatum(float x, float y, float dataSize) {
   if( dataSize < 40 ) {
     // small prisons in blue as a square
     fill(120,120,255);
-    rect(drawX, drawY, dataSize, dataSize); 
+    ellipse(drawX, drawY, dataSize, dataSize); // Constraint of where circles appear and size of circles
   }
   else {
     // large prisons in green as a circle 
     fill(120, 200, 120 );
-    ellipse(drawX, drawY, dataSize, dataSize); // Constraint of where circles appear and size of circles
-  }
+    rect(drawX, drawY, dataSize, dataSize); 
+   }
 }
 
 void keyPressed() {
