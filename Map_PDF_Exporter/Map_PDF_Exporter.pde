@@ -135,14 +135,8 @@ void drawAllData() {
     float x = row.getFloat("Longitude");
     float y = row.getFloat("Latitude");
     
-    float s = row.getFloat("Size");
-    
-    s = s/200;
-    if( s < 1 )
-      s = 1;
-    
-    //-- use 20 (arbitrary datasize)
-    drawDatum(x,y, s);
+    //-- use 5 (arbitrary datasize)
+    drawDatum(x,y, 5);
   }
 }
 
