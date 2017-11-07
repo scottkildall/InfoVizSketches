@@ -6,8 +6,10 @@
   Renders out a simple CSV file to (x,y) points on the screen
   Looks for 2 header columns: "Latitude" and "Longitude"
   
+  This version includes a "Size" field
+  
   Output file is: data_output.pdf
-  Input file is:
+  Input file is: data_input.csv
   
   Spacebar will save the file
   
@@ -134,9 +136,14 @@ void drawAllData() {
     
     float x = row.getFloat("Longitude");
     float y = row.getFloat("Latitude");
+    float s = row.getFloat("Size");
     
-    //-- use 5 (arbitrary datasize)
-    drawDatum(x,y, 5);
+    //-- filter so we don't show small prisons
+    if( s > 10 ) {
+      //-- decrease size here
+      s = s / 100;
+      drawDatum(x,y, s);
+    }
   }
 }
 
@@ -146,7 +153,17 @@ void drawDatum(float x, float y, float dataSize) {
   float drawY = map(y, (minLat - latAdjust), (maxLat + latAdjust), height - margin, margin) * 1.3333 - 100;
   
   //-- you can draw a rectangle or other shapes here
-  ellipse(drawX, drawY, dataSize, dataSize); // Constraint of where circles appear and size of circles
+  
+  if( dataSize < 40 ) {
+    // small prisons in blue as a square
+    fill(120,120,255);
+    rect(drawX, drawY, dataSize, dataSize); 
+  }
+  else {
+    // large prisons in green as a circle 
+    fill(120, 200, 120 );
+    ellipse(drawX, drawY, dataSize, dataSize); // Constraint of where circles appear and size of circles
+  }
 }
 
 void keyPressed() {
