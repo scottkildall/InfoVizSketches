@@ -22,9 +22,6 @@ import processing.pdf.*;
 //-- then, in the draw() functon we will record 
 boolean recordToPDF = false;
 
-//-- set to TRUE if you are using the size field (such as with prisons)
-boolean bUseSize = true;
-
 //-- this is our table of data
 Table table;
 
@@ -141,21 +138,25 @@ void drawAllData() {
     float y = row.getFloat("Latitude");
     float s;    // size
     
-    if( bUseSize ) {
-       s = row.getFloat("Size");
-    
+    //-- Process size column
+    try {
+      //-- there IS size column
+      s = row.getFloat("Size");
+      
       //-- filter so we don't show small prisons
       if( s > 10 ) {
         //-- decrease size here
         s = s / 100;
-        drawDatum(x,y, s);
+        
       }
+    } catch (Exception e) {
+      //-- there is NO size column in this data set
+      //-- no size coulumn, set s to plottable value
+      s = 5;
     }
-    else {
-      //-- not using size methods
-       s = 5; 
-       drawDatum(x,y, s);
-    }
+    
+    //-- draw data point here
+    drawDatum(x,y, s);
   }
 }
 
