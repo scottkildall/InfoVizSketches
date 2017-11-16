@@ -18,6 +18,18 @@
 //-- this is a build in PDF library for Processing that allows for export 
 import processing.pdf.*;
 
+//---------------------------------------------------------------------------
+//-- DEFAULT VARIABLES
+final float defaultSize = 5;
+final int defaultCategoryNum = 0;
+final float  margin = 50;
+
+final float homeLat = 37.777133;
+final float homeLon = -122.452745;
+float homeX;
+float homeY;
+
+//---------------------------------------------------------------------------
 //-- this is a flag. When you press the SPACE bar, it will set to TRUE
 //-- then, in the draw() functon we will record 
 boolean recordToPDF = false;
@@ -25,7 +37,7 @@ boolean recordToPDF = false;
 //-- this is our table of data
 Table table;
 
-//-------------------------
+//---------------------------------------------------------------------------
 //-- these are all variables for doing accurate mapping
 float minLon = 9999;
 float maxLon = -9999;
@@ -37,14 +49,24 @@ float latRange;
 
 float lonAdjust;
 float latAdjust;
-//-------------------------
+//---------------------------------------------------------------------------
 
+
+//
 void setup() {
   //-- right now width and height have to be the same, otherwise it won't map properly
   //-- set to something like (2400,2400) for a large image
   size(600,600);
   
   loadData("data_input.csv");
+  
+  homeX = map(homeLon, (minLon - lonAdjust), (maxLon + lonAdjust), margin, width - margin);
+  homeY = map(homeLat, (minLat - latAdjust), (maxLat + latAdjust), height - margin, margin) * 1.3333 - 100;
+  
+  
+  println(homeX);
+  println(homeY);
+  
 }
 
 void draw() {
@@ -136,9 +158,24 @@ void drawAllData() {
     
     float x = row.getFloat("Longitude");
     float y = row.getFloat("Latitude");
-    float s;    // size
+    float s = getSizeData(row);       // size
+    int c = getCategoryData(row);   // category 
     
-    //-- Process size column
+   
+    //-- draw data point here
+    drawDatum(x,y, s, c);
+  }
+  
+  //-- draw home
+  //fill(255,0,0);
+  //ellipse(homeX, homeY, 10,10);
+}
+
+//-- read .size column, if there is none, then we use a default size variable (global)
+float getSizeData(TableRow row) {
+   float s = defaultSize;
+
+   //-- Process size column
     try {
       //-- there IS size column
       s = row.getFloat("Size");
@@ -147,36 +184,61 @@ void drawAllData() {
       if( s > 10 ) {
         //-- decrease size here
         s = s / 100;
-        
       }
     } catch (Exception e) {
       //-- there is NO size column in this data set
       //-- no size coulumn, set s to plottable value
-      s = 5;
+      
     }
     
-    //-- draw data point here
-    drawDatum(x,y, s);
-  }
+    return s;
 }
 
-void drawDatum(float x, float y, float dataSize) {
-  float  margin = 50;
+//-- read .category column, if there is none, then we use a default category
+//-- category is always an int
+int getCategoryData(TableRow row) {
+   int c = defaultCategoryNum;
+
+   //-- Process size column
+    try {
+      //-- there IS size column
+      c = row.getInt("Category");
+    } catch (Exception e) {
+      //-- there is NO category column in this data set
+      //-- OR there is a non-integer
+    }
+    
+    return c;
+}
+
+void drawDatum(float x, float y, float dataSize, int c) {
+  
   float drawX = map(x, (minLon - lonAdjust), (maxLon + lonAdjust), margin, width - margin);
   float drawY = map(y, (minLat - latAdjust), (maxLat + latAdjust), height - margin, margin) * 1.3333 - 100;
+  
   
   //-- you can draw a rectangle or other shapes here
   
   if( dataSize < 40 ) {
     // small prisons in blue as a square
     fill(120,120,255);
+    
+     if( c == 1 )
+       fill(255,255,0);
+     
     ellipse(drawX, drawY, dataSize, dataSize); // Constraint of where circles appear and size of circles
   }
   else {
     // large prisons in green as a circle 
     fill(120, 200, 120 );
+    
+     if( c == 1 )
+       fill(255,255,0);
+     
     rect(drawX, drawY, dataSize, dataSize); 
    }
+   
+   
 }
 
 void keyPressed() {
