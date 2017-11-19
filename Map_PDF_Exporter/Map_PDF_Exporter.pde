@@ -61,7 +61,7 @@ void setup() {
   loadData("data_input.csv");
   
   homeX = map(homeLon, (minLon - lonAdjust), (maxLon + lonAdjust), margin, width - margin);
-  homeY = map(homeLat, (minLat - latAdjust), (maxLat + latAdjust), height - margin, margin) * 1.3333 - 100;
+  homeY = map(homeLat, (minLat - latAdjust), (maxLat + latAdjust), height - margin, margin) * 1.25 - 100;
   
   
   println(homeX);
@@ -214,7 +214,7 @@ int getCategoryData(TableRow row) {
 void drawDatum(float x, float y, float dataSize, int c) {
   
   float drawX = map(x, (minLon - lonAdjust), (maxLon + lonAdjust), margin, width - margin);
-  float drawY = map(y, (minLat - latAdjust), (maxLat + latAdjust), height - margin, margin) * 1.3333 - 100;
+  float drawY = map(y, (minLat - latAdjust), (maxLat + latAdjust), height - margin, margin) * 1.25 - 100;
   
   
   //-- you can draw a rectangle or other shapes here
