@@ -18,11 +18,6 @@ void draw() {
   // Background of 0 = back, background of 255 = white
   background(0);
   
-  //-- Draws a row of squares
-  fill(255,0,0);        // fill color
-  strokeWeight(0);
-  drawRowSquares(5, 100, 10);
-  
   //-- Fill
   fill(255,0,255);        // fill color
   stroke(127,127,127);      // color of the stroke
@@ -30,6 +25,14 @@ void draw() {
   
   //-- This draws a centered circle 
   drawCenteredCircle(30);
+  
+  //-- Draws a row of squares
+  fill(255,0,0);        // fill color
+  stroke(127,127,127);      // color of the stroke
+  strokeWeight(2);
+  drawRowSquares(5, 100, 30);
+  
+ 
 }
 
 //-- draw a centered circle

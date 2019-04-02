@@ -3,7 +3,7 @@
   Written by Scott Kildall
   September 2017
   
-  Draws some simple shapes w/intersecting lines
+  Draws some simple shapes
 */
 
 
@@ -20,9 +20,9 @@ void draw() {
   
   //-- Draws a row of squares
   fill(255,0,0);        // fill color
-  strokeWeight(0);
-  drawRowSquares(5, 100, 10);
-
+  stroke(127,127,127);      // color of the stroke
+  strokeWeight(2);
+  drawRowSquares(5, 100, 30);
   
   //-- Fill
   fill(255,0,255);        // fill color
