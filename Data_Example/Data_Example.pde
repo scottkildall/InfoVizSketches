@@ -1,7 +1,7 @@
 /*
-  DSP_Example
+  Data Example
   Written by Scott Kildall
-  MArch 2019
+  March 2019
   
   NOT WORKING
   
@@ -9,6 +9,14 @@
    
     Input file is: data_input.csv
     Output file is: saved_file.pdf
+    
+    Website: http://cow.dss.ucdavis.edu/data-sets/COW-war
+    
+    Dataset: The Inter-state War Data, a smaller consolidated version:
+    
+    Header has this infohere:
+    WarNum, WarName, StateName, StartYear1, EndYear1, BatDeath
+    
 */
 
 import processing.pdf.*;
@@ -16,10 +24,21 @@ import processing.pdf.*;
 //-- used in keyPressed() as flag to save to PDF
 boolean recordToPDF = false;
 
+//-- this is our table of data
+Table table;
+
+//-- min/max years
+int startYear = 3000;    // impossibly high
+int endYear = 0;        // impossibly low
+int screenWidth = 1000;
+int margin = 50;
+
 //-- do any sort of setup functions here
 void setup() {
   size(1000,800);
   rectMode(CENTER);
+  
+  loadData("data_input.csv");
 }
 
 void draw() {
@@ -31,19 +50,24 @@ void draw() {
     beginRecord(PDF, "saved_file.pdf");
   }
   
-  //-- Draws a row of squares
-  fill(255,0,0);        // fill color
-  strokeWeight(0);
-  drawRowSquares(5, 100, 10);
+  fill(255,0,0, 100);
+  noStroke();
+  
+  // Draw circles for data, make a minimum mark (though this is not as accurate...)
+  for (TableRow row : table.rows()) {
+      
+      float drawX = map( row.getInt("StartYear1"), startYear, endYear, margin, screenWidth-margin);
+      
+      int deaths = row.getInt("BatDeath");
+      float ellipseArea = sqrt(deaths) / 5;
+      
+      if( ellipseArea < 2 )
+        ellipseArea = 2;
+        
+      ellipse( drawX, 400,ellipseArea, ellipseArea);
+  }
+  
 
-  
-  //-- Fill
-  fill(255,0,255);        // fill color
-  stroke(127,127,127);      // color of the stroke
-  strokeWeight(2);          // thickness of the line
-  
-  //-- This draws a centered circle 
-  drawCenteredCircle(30);
   
    //-- check the flag to record to PDF
   if( recordToPDF ) {
@@ -71,6 +95,33 @@ void draw() {
    }
  }
  
+ //-- loads the data into the table variable, does some testing for the output
+void loadData(String filename) {
+  //-- this loads the actual table into memory
+  table = loadTable(filename, "header");
+
+  println(table.getRowCount() + " total rows in table"); 
+
+  
+  //-- go though table and do additional processing here, if needed
+  
+  for (TableRow row : table.rows()) {
+    int sy = row.getInt("StartYear1");
+    int ey = row.getInt("EndYear1");
+    
+    //-- store earliest and latest year in variables
+    if( sy < startYear )
+      startYear = sy;
+    if( ey > endYear )
+      endYear = ey;
+  }  
+
+ 
+  println( "start year = " + startYear ); 
+  println( "start year = " + endYear );
+}
+
+
  //-- when user pressed the SPACE bar, set recordToPDF = true and we will save to PDF in the draw functions
 void keyPressed() {
   if( key == ' ' )
