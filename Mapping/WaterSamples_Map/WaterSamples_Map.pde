@@ -1,7 +1,7 @@
 /*
-  Map_PDF_Exporter
+  WaterSamples_Ma[
   Written by Scott Kildall
-  September 2017
+  September 2019
   
   Renders out a simple CSV file to (x,y) points on the screen
   Looks for 2 header columns: "Latitude" and "Longitude"
@@ -12,6 +12,8 @@
   Input file is: data_input.csv
   
   Spacebar will save the file
+  
+  Based on the Map_PDF_Exporter
   
 */
 
@@ -56,7 +58,7 @@ float latAdjust;
 void setup() {
   //-- right now width and height have to be the same, otherwise it won't map properly
   //-- set to something like (2400,2400) for a large image
-  size(600,600);
+  size(1000,1000);
   
   loadData("data_input.csv");
   
@@ -158,12 +160,12 @@ void drawAllData() {
     
     float x = row.getFloat("Longitude");
     float y = row.getFloat("Latitude");
-    float s = getSizeData(row);       // size
-    int c = getCategoryData(row);   // category 
+    float pH = getpHData(row);       // size
+    float ec = getECData(row);   // category 
     
    
     //-- draw data point here
-    drawDatum(x,y, s, c);
+    drawWaterSample(x,y, pH, ec);
   }
   
   //-- draw home
@@ -172,73 +174,56 @@ void drawAllData() {
 }
 
 //-- read .size column, if there is none, then we use a default size variable (global)
-float getSizeData(TableRow row) {
-   float s = defaultSize;
-
+float getpHData(TableRow row) {
+   float pH = 7.0;  // make this the default
+  
    //-- Process size column
     try {
       //-- there IS size column
-      s = row.getFloat("Size");
-      
-      //-- filter so we don't show small prisons
-      if( s > 10 ) {
-        //-- decrease size here
-        s = s / 100;
-      }
+      pH = row.getFloat("pH");
     } catch (Exception e) {
       //-- there is NO size column in this data set
       //-- no size coulumn, set s to plottable value
       
     }
     
-    return s;
+    return pH;
 }
 
 //-- read .category column, if there is none, then we use a default category
 //-- category is always an int
-int getCategoryData(TableRow row) {
-   int c = defaultCategoryNum;
-
+float getECData(TableRow row) {
+   float ec = 400;  // make this the default
+  
    //-- Process size column
     try {
       //-- there IS size column
-      c = row.getInt("Category");
+      ec = row.getFloat("EC (Instrument)");
     } catch (Exception e) {
-      //-- there is NO category column in this data set
-      //-- OR there is a non-integer
+      //-- there is NO size column in this data set
+      //-- no size coulumn, set s to plottable value
+      
     }
     
-    return c;
+    return ec;
 }
 
-void drawDatum(float x, float y, float dataSize, int c) {
+void drawWaterSample(float x, float y, float pH, float ec) {
   
   float drawX = map(x, (minLon - lonAdjust), (maxLon + lonAdjust), margin, width - margin);
   float drawY = map(y, (minLat - latAdjust), (maxLat + latAdjust), height - margin, margin) * 1.25 - 100;
   
+  //-- regular blue  
+  fill(0,0,255);
   
-  //-- you can draw a rectangle or other shapes here
+  //-- change according to pH
+  //fill(0,0,255-(pH*20));
   
-  if( dataSize < 40 ) {
-    // small prisons in blue as a square
-    fill(120,120,255);
-    
-     if( c == 1 )
-       fill(255,255,0);
-     
-    ellipse(drawX, drawY, dataSize, dataSize); // Constraint of where circles appear and size of circles
-  }
-  else {
-    // large prisons in green as a circle 
-    fill(120, 200, 120 );
-    
-     if( c == 1 )
-       fill(255,255,0);
-     
-    rect(drawX, drawY, dataSize, dataSize); 
-   }
+  //-- change according to ec and pH
+  //fill(255 * (30/ec),0,255-(pH*20));
    
-   
+     
+  ellipse(drawX, drawY, 15, 15); // Constraint of where circles appear and size of circles   
 }
 
 void keyPressed() {
