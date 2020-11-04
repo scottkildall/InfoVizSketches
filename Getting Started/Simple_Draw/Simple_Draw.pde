@@ -30,9 +30,10 @@ void draw() {
   fill(255,0,0);        // fill color
   stroke(127,127,127);      // color of the stroke
   strokeWeight(2);
-  drawRowSquares(5, 100, 30);
   
- 
+  //-- Call function to draw a row of squares
+  //-- TRY CHANGING THESE VARIABLES
+  drawRowSquares(5, 100, 30);
 }
 
 //-- draw a centered circle

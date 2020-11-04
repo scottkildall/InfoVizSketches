@@ -159,11 +159,11 @@ void drawAllData() {
     float x = row.getFloat("Longitude");
     float y = row.getFloat("Latitude");
     float s = getSizeData(row);       // size
-    int c = getCategoryData(row);   // category 
+    int year = getYearData(row);   // category 
     
    
     //-- draw data point here
-    drawDatum(x,y, s, c);
+    drawDatum(x,y, s, year);
   }
   
   //-- draw home
@@ -178,12 +178,16 @@ float getSizeData(TableRow row) {
    //-- Process size column
     try {
       //-- there IS size column
-      s = row.getFloat("Size");
+      s = row.getFloat("Magnitude");
       
       //-- filter so we don't show small prisons
-      if( s > 10 ) {
-        //-- decrease size here
-        s = s / 100;
+      if( s < 4.0 ) {
+        //-- small
+        s = 10;
+      }
+      else {
+         //-- big
+         s = 30;
       }
     } catch (Exception e) {
       //-- there is NO size column in this data set
@@ -196,49 +200,36 @@ float getSizeData(TableRow row) {
 
 //-- read .category column, if there is none, then we use a default category
 //-- category is always an int
-int getCategoryData(TableRow row) {
-   int c = defaultCategoryNum;
+int getYearData(TableRow row) {
+   int y = 2004;    // default
 
    //-- Process size column
     try {
       //-- there IS size column
-      c = row.getInt("Category");
+      y = row.getInt("Year");
     } catch (Exception e) {
       //-- there is NO category column in this data set
       //-- OR there is a non-integer
     }
     
-    return c;
+    return y;
 }
 
-void drawDatum(float x, float y, float dataSize, int c) {
+void drawDatum(float x, float y, float dataSize, int year) {
   
   float drawX = map(x, (minLon - lonAdjust), (maxLon + lonAdjust), margin, width - margin);
   float drawY = map(y, (minLat - latAdjust), (maxLat + latAdjust), height - margin, margin) * 1.25 - 100;
   
   
-  //-- you can draw a rectangle or other shapes here
-  
-  if( dataSize < 40 ) {
-    // small prisons in blue as a square
-    fill(120,120,255);
+  //-- change color based on year
+  if( year == 2014 )
+    fill(255,255,0);
+  else if( year == 2018 )
+    fill(0,0,255);
+  else
+    fill(255,255,255);
     
-     if( c == 1 )
-       fill(255,255,0);
-     
-    ellipse(drawX, drawY, dataSize, dataSize); // Constraint of where circles appear and size of circles
-  }
-  else {
-    // large prisons in green as a circle 
-    fill(120, 200, 120 );
-    
-     if( c == 1 )
-       fill(255,255,0);
-     
-    rect(drawX, drawY, dataSize, dataSize); 
-   }
-   
-   
+  ellipse(drawX, drawY, dataSize, dataSize); // Constraint of where circles appear and size of circles   
 }
 
 void keyPressed() {

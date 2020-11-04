@@ -23,7 +23,7 @@ Good starter sketch for understanding how to draw shapes
 Drawing shapes using functions, shows a for loop
 
 ### Simple_Draw_Lines
-Builds on Simple_Draw, but adds lines to it, look at order of drawin
+Builds on Simple_Draw, but adds lines to it, look at order of drawing
 
 ### Simple_Draw_Alpha
 Builds on Simple_Draw but uses ellipses and shows you how an alpha channel might be output
