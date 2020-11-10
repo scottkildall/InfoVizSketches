@@ -178,17 +178,10 @@ float getSizeData(TableRow row) {
    //-- Process size column
     try {
       //-- there IS size column
-      s = row.getFloat("Magnitude");
+      s = row.getFloat("Size");
       
-      //-- filter so we don't show small prisons
-      if( s < 4.0 ) {
-        //-- small
-        s = 10;
-      }
-      else {
-         //-- big
-         s = 30;
-      }
+      s = s/400;
+      
     } catch (Exception e) {
       //-- there is NO size column in this data set
       //-- no size coulumn, set s to plottable value
@@ -222,12 +215,10 @@ void drawDatum(float x, float y, float dataSize, int year) {
   
   
   //-- change color based on year
-  if( year == 2014 )
-    fill(255,255,0);
-  else if( year == 2018 )
-    fill(0,0,255);
+  if( dataSize > 10 )
+    fill(255,0,0);
   else
-    fill(255,255,255);
+    fill(0,240,128);
     
   ellipse(drawX, drawY, dataSize, dataSize); // Constraint of where circles appear and size of circles   
 }
