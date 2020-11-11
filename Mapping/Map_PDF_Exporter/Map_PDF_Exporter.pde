@@ -18,16 +18,15 @@
 //-- this is a build in PDF library for Processing that allows for export 
 import processing.pdf.*;
 
+MercatorMap mapper;
+
 //---------------------------------------------------------------------------
 //-- DEFAULT VARIABLES
 final float defaultSize = 5;
 final int defaultCategoryNum = 0;
 final float  margin = 50;
-
-final float homeLat = 37.777133;
-final float homeLon = -122.452745;
-float homeX;
-float homeY;
+float screenWidth;
+float screenHeight;
 
 //---------------------------------------------------------------------------
 //-- this is a flag. When you press the SPACE bar, it will set to TRUE
@@ -52,21 +51,28 @@ float latAdjust;
 //---------------------------------------------------------------------------
 
 
+// 1 degree of longitude = 54.6 miles
+// 1 degree of latutide = 69 miles
+// this is the ratio between them
+float latLonAdjustment = 1.2637;
+
 //
 void setup() {
   //-- right now width and height have to be the same, otherwise it won't map properly
   //-- set to something like (2400,2400) for a large image
-  size(600,600);
+  size(800,800);
+  
+  
   
   loadData("data_input.csv");
+    
+  mapper = new MercatorMap(width,height, maxLat, minLat , minLon, maxLon );
+    
+  rectMode(CENTER);
+  ellipseMode(CENTER);
   
-  homeX = map(homeLon, (minLon - lonAdjust), (maxLon + lonAdjust), margin, width - margin);
-  homeY = map(homeLat, (minLat - latAdjust), (maxLat + latAdjust), height - margin, margin) * 1.25 - 100;
-  
-  
-  println(homeX);
-  println(homeY);
-  
+  screenWidth  = width;
+  screenHeight = height;
 }
 
 void draw() {
@@ -75,14 +81,13 @@ void draw() {
   
   
   //-- respond to flag for recording
-  if( recordToPDF )
+  if( recordToPDF ) {
     beginRecord(PDF, "data_output.pdf");
-  
+  }
   
   // use various strokes and weights to respond to size here
   fill(0,0,255);
   noStroke();
-  //stroke(127,127,127);
   strokeWeight(0);
   
   //-- draw data
@@ -110,26 +115,32 @@ void loadData(String filename) {
     float x = row.getFloat("Longitude");
     float y = row.getFloat("Latitude");
     
-     if( x < minLon )
+     if( x < minLon ) {
       minLon = x;
-    else if( x > maxLon )
+    }
+    else if( x > maxLon ) {
       maxLon = x;
+    }
     
-    if( y < minLat )
+     //println("y = " + y);
+     //  println("maxLat = " + maxLat);
+    if( y < minLat ) {
       minLat = y;
-    else if( y > maxLat )
+    }
+    
+    if( y > maxLat ) {
       maxLat = y;
+    }
   }  
   
   //-- determine various ranges and make simple math adjustments for plotting on the screen
-  println("min X =" + minLon );
-  println("min Y =" + minLat );
-  println("max X =" + maxLon );
-  println("max Y =" + maxLat );
+  println("min lon (Y) = " + minLon );
+  println("min lat (X) = " + minLat );
+  println("max lon (Y) = " + maxLon );
+  println("max lat (X) = " + maxLat );
   
   lonRange = maxLon-minLon;
   latRange = maxLat-minLat;
-  
   
   println("lon range = " + lonRange );
   println("lat range = " + latRange );
@@ -154,6 +165,25 @@ void loadData(String filename) {
 
 //-- draw each data
 void drawAllData() {
+  /*
+  println("----------------");
+  float xLeft = (minLon - lonAdjust);
+  float xRight = (maxLon + lonAdjust);
+   float yLeft = (minLat - latAdjust);
+   float yRight = (maxLat + latAdjust);
+   println("x left = " + xLeft );
+   println("x right = " + xRight );
+   println("y left = " + yLeft );
+   println("y right = " + yRight );
+    println("x size = " + (xRight-xLeft) );
+  println("y size = " + (yRight-yLeft) );
+  println("----------------");
+  */
+  
+   // Re-do CENTER drawing b/c PDFs operate strangle
+   rectMode(CENTER);
+   ellipseMode(CENTER);
+    
   for (TableRow row : table.rows()) {
     
     float x = row.getFloat("Longitude");
@@ -165,10 +195,6 @@ void drawAllData() {
     //-- draw data point here
     drawDatum(x,y, s, year);
   }
-  
-  //-- draw home
-  //fill(255,0,0);
-  //ellipse(homeX, homeY, 10,10);
 }
 
 //-- read .size column, if there is none, then we use a default size variable (global)
@@ -210,18 +236,25 @@ int getYearData(TableRow row) {
 
 void drawDatum(float x, float y, float dataSize, int year) {
   
-  float drawX = map(x, (minLon - lonAdjust), (maxLon + lonAdjust), margin, width - margin);
-  float drawY = map(y, (minLat - latAdjust), (maxLat + latAdjust), height - margin, margin) * 1.25 - 100;
+  float drawX = map(x, (minLon - lonAdjust), (maxLon + lonAdjust), margin, (float)(screenWidth - margin) );
+  float drawY = map(y, (minLat - latAdjust), (maxLat + latAdjust), (float)(screenHeight - margin), margin) * latLonAdjustment;
+  
+  // inconsistent results...
+  //float drawX = mapper.getScreenX(x);
+  //float drawY = mapper.getScreenY(y) * .575;
   
   
-  //-- change color based on year
-  if( dataSize > 10 )
+  //-- change color based on size
+  if( dataSize > 10 ) {
     fill(255,0,0);
-  else
-    fill(0,240,128);
-    
-  ellipse(drawX, drawY, dataSize, dataSize); // Constraint of where circles appear and size of circles   
+    ellipse(drawX, drawY, dataSize, dataSize); // Constraint of where circles appear and size of circles   
 }
+  else {
+    fill(0,240,128);
+    rect(drawX, drawY, dataSize, dataSize); // Constraint of where circles appear and size of circles   
+   } 
+ }
+  
 
 void keyPressed() {
   if( key == ' ' )

@@ -800,7 +800,6 @@ Contra Costa County,38.017716,-122.132208,589
 Contra Costa West County Detention Facility,38.026152,-121.934834,84
 Converse County Jail,42.760203,-105.380563,30
 Conway Human Development Center,35.101829,-92.425144,505
-Cook County Jail,41.840983,-87.697566,9796
 Coolidge House,42.341204,-71.088018,81
 Cooper Street Correctional Facility,42.295968,-84.397079,1717
 Coosa County Jail,32.889657,-86.221034,80
@@ -2064,7 +2063,6 @@ Los Angeles MDC,34.053132,-118.23912,1147
 Loudon County Jail,35.839035,-84.234599,75
 Loudoun Adult Detention Center,39.076043,-77.543338,170
 Louisiana Correctional Institute for Women,30.2617,-91.078634,1696
-Louisiana State Penitentiary,30.985282,-91.477335,5147
 Louisville Metropolitan Dept of Corrections,38.253903,-85.76122,1575
 Louisville Metropolitan Dept of Corrections- Community Correctional Center,38.247575,-85.748267,436
 Love County Jail,33.936925,-97.121054,5
@@ -2958,7 +2956,6 @@ Richwood Correctional Center,32.457955,-92.079675,926
 Ridgeland Correctional Institution,32.497621,-80.96499,1294
 Rifle Correctional Facility,39.706632,-107.756177,191
 Rikers Island,40.789737,-73.884844,2457
-Rikers Island,40.794386,-73.880803,8634
 Riley County Jail,39.170577,-96.60767,95
 Rio Arriba County Detention Center,36.699105,-106.552256,100
 Rio Blanco County Jail,40.037987,-107.913159,12
@@ -5288,3 +5285,6 @@ Yuma County Jail,40.078442,-102.220405,16
 Zanesville City Jail,39.938962,-82.009185,40
 Zavala County Jail,28.679516,-99.827009,61
 Zephyrhills Correctional Institution,28.195854,-82.212227,650
+Cook County Jail,41.840983,-87.697566,9796
+Rikers Island,40.794386,-73.880803,8634
+Louisiana State Penitentiary,30.985282,-91.477335,5147
