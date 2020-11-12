@@ -206,6 +206,9 @@ float getSizeData(TableRow row) {
       //-- there IS size column
       s = row.getFloat("Size");
       
+      // modify the size data here:
+      // Cisterns: use something like  s = s/10000;
+      // Prisons: use soemthing like s = s/400;
       s = s/400;
       
     } catch (Exception e) {
